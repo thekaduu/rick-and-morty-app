@@ -11,16 +11,46 @@ class CharacterCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var backgroundCardColor;
+    var titleColor;
+    var statusColor;
+    var disabledColor;
+    var defaultColor;
+
+    switch (character.status.toLowerCase()) {
+      case 'alive':
+        backgroundCardColor = AppColors.green;
+        titleColor = AppColors.white;
+        statusColor = AppColors.gray;
+        disabledColor = AppColors.gray;
+        defaultColor = AppColors.white;
+        break;
+      case 'dead':
+        backgroundCardColor = AppColors.red;
+        statusColor = AppColors.black;
+        titleColor = AppColors.black;
+        disabledColor = AppColors.black;
+        defaultColor = AppColors.black;
+        break;
+      default:
+        backgroundCardColor = AppColors.black;
+        statusColor = AppColors.orange;
+        titleColor = AppColors.white;
+        disabledColor = AppColors.disabled;
+        defaultColor = AppColors.white;
+        break;
+    }
+
     TextStyle tilteCardStyle = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 24.0,
-      color: AppColors.white,
+      color: titleColor,
       leadingDistribution: TextLeadingDistribution.even,
       height: 1.1,
     );
     return Card(
       elevation: 0.0,
-      color: AppColors.black,
+      color: backgroundCardColor,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         verticalDirection: VerticalDirection.down,
@@ -45,7 +75,8 @@ class CharacterCard extends StatelessWidget {
                   Text(
                     "${character.statusTranslated} - ${character.species}",
                     style: TextStyle(
-                      color: AppColors.white,
+                      color: statusColor,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   Padding(
@@ -56,14 +87,14 @@ class CharacterCard extends StatelessWidget {
                         Text(
                           'Última Localização:',
                           style: TextStyle(
-                              color: AppColors.disabled,
+                              color: disabledColor,
                               fontSize: 14.0,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
                           character.lastKnowLocation,
                           style: TextStyle(
-                            color: AppColors.white,
+                            color: defaultColor,
                           ),
                         )
                       ],
@@ -77,14 +108,14 @@ class CharacterCard extends StatelessWidget {
                         Text(
                           'Primeira vez visto:',
                           style: TextStyle(
-                              color: AppColors.disabled,
+                              color: disabledColor,
                               fontSize: 14.0,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
                           character.origin,
                           style: TextStyle(
-                            color: AppColors.white,
+                            color: defaultColor,
                           ),
                         )
                       ],

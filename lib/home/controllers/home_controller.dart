@@ -7,20 +7,36 @@ import 'package:http/http.dart' as http;
 class HomeController {
   List<Character> characters = [];
   String nextPage = '';
+  String prevPage = '';
+  bool loading = false;
 
   Future<List<Character>> loadCharacters() async {
-    var url = nextPage.isNotEmpty
-        ? nextPage
-        : 'https://rickandmortyapi.com/api/character';
+    if (nextPage.isEmpty && prevPage.isNotEmpty) {
+      throw Exception('Nenhum resultado encontrado');
+    }
+
+    if (loading) {
+      return characters;
+    }
+
+    loading = true;
+
+    var url = nextPage.isEmpty
+        ? 'https://rickandmortyapi.com/api/character'
+        : nextPage;
 
     Uri uri = Uri.parse(url);
 
     http.Response response = await http.get(uri);
     var body = jsonDecode(response.body);
-    nextPage = body['info']['next'];
+    nextPage = body['info']['next'].toString();
+    prevPage = body['info']['prev'].toString();
 
     List<dynamic> results = body['results'];
     results.forEach(_buildCharacter);
+    print(url);
+    loading = false;
+
     return characters;
   }
 

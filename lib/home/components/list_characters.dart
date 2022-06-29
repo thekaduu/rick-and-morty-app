@@ -13,45 +13,34 @@ class ListCharacters extends StatefulWidget {
 
 class _ListCharactersState extends State<ListCharacters> {
   HomeController _homeController = HomeController();
-
-  late Future<List<Character>> futureCharacters;
+  List<Character> characters = [];
 
   @override
   void initState() {
     super.initState();
-    futureCharacters = _homeController.loadCharacters();
+    fetch();
   }
 
-  void fetchCharacters() {
-    futureCharacters = _homeController.loadCharacters();
+  fetch() async {
+    try {
+      final List<Character> response = await _homeController.loadCharacters();
+      setState(() {
+        characters = response;
+      });
+    } catch (e) {}
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: futureCharacters,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          List<Character> characters = snapshot.data! as List<Character>;
-
-          return ListView.builder(
-              itemCount: characters.length,
-              itemBuilder: (context, index) {
-                final Character character = characters[index];
-                if (index >= characters.length / 2) {
-                  fetchCharacters();
-                  print(index);
-                }
-                return CharacterCard(character: character);
-              });
+    return ListView.builder(
+      itemBuilder: (BuildContext context, int index) {
+        if (index >= characters.length / 2) {
+          fetch();
         }
-
-        if (snapshot.hasError) {
-          return Text('Deu ruim');
-        }
-
-        return CircularProgressIndicator();
+        final character = characters[index];
+        return CharacterCard(character: character);
       },
+      itemCount: characters.length,
     );
   }
 }
